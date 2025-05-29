@@ -1,17 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import nodemailer from 'nodemailer';
+import NextCors from 'nextjs-cors';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // ✅ Povolení CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // ✅ Zpracuj OPTIONS preflight request
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
+  // ✅ Správný CORS support přes knihovnu
+  await NextCors(req, res, {
+    // 👇 nastavuj jen doménu, kterou potřebuješ (dočasně *)
+    origin: '*',
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+    optionsSuccessStatus: 200,
+  });
 
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Only POST requests allowed' });
