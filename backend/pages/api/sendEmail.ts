@@ -1,21 +1,26 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import nodemailer from 'nodemailer';
 
+export const config = {
+  api: {
+    bodyParser: true,
+  },
+};
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // ✅ Preflight CORS (musí být první!)
-  if (req.method === 'OPTIONS') {
+   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     return res.status(200).end();
   }
 
-  // ✅ Povol CORS i pro POST
   res.setHeader('Access-Control-Allow-Origin', '*');
 
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Only POST requests allowed' });
   }
+
 
   const { email, code } = req.body;
 
