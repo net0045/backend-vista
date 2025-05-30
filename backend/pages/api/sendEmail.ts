@@ -2,16 +2,16 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import nodemailer from 'nodemailer';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // CORS hlavičky – nutné pro všechny requesty
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // ✅ Preflight check – reaguj na OPTIONS (tady je klíč!)
+  // ✅ Preflight CORS (musí být první!)
   if (req.method === 'OPTIONS') {
-    res.status(200).end(); // nebo res.status(204).end();
-    return;
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    return res.status(200).end();
   }
+
+  // ✅ Povol CORS i pro POST
+  res.setHeader('Access-Control-Allow-Origin', '*');
 
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Only POST requests allowed' });
